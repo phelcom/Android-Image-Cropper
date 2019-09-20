@@ -296,6 +296,18 @@ public class CropImageView extends FrameLayout {
           options.flipVertically =
               ta.getBoolean(R.styleable.CropImageView_cropFlipHorizontally, options.flipVertically);
 
+          options.numberOfLines =
+              ta.getInt(R.styleable.CropImageView_numberOfLines, options.numberOfLines);
+
+          options.showTextOnOverlay =
+              ta.getBoolean(R.styleable.CropImageView_showTextOnOverlay, options.showTextOnOverlay);
+
+          options.horizontalText =
+              ta.getString(R.styleable.CropImageView_horizontalText);
+
+          options.verticalText =
+              ta.getString(R.styleable.CropImageView_verticalText);
+
           mSaveBitmapToInstanceState =
               ta.getBoolean(
                   R.styleable.CropImageView_cropSaveBitmapToInstanceState,
@@ -430,6 +442,23 @@ public class CropImageView extends FrameLayout {
    */
   public void setMaxCropResultSize(int maxCropResultWidth, int maxCropResultHeight) {
     mCropOverlayView.setMaxCropResultSize(maxCropResultWidth, maxCropResultHeight);
+  }
+
+
+  public void setCropOverlayNumberOfLines(int numberOfLines) {
+    mCropOverlayView.setNumberOfLines(numberOfLines);
+  }
+
+  public void setShowTextOnOverlay(boolean show){
+    mCropOverlayView.setShowTextOnOverlay(show);
+  }
+
+  public void setCropOverlayHorizontalText(String text) {
+    mCropOverlayView.setHorizontalText(text);
+  }
+
+  public void setCropOverlayVerticalText(String text) {
+    mCropOverlayView.setVerticalText(text);
   }
 
   /**

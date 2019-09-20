@@ -222,6 +222,14 @@ public class CropImageOptions implements Parcelable {
   /** optional image resource to be used for crop menu crop icon instead of text */
   public int cropMenuCropButtonIcon;
 
+  public int numberOfLines;
+
+  public boolean showTextOnOverlay;
+
+  public String horizontalText;
+  public String verticalText;
+
+
   /** Init options with defaults. */
   public CropImageOptions() {
 
@@ -283,6 +291,13 @@ public class CropImageOptions implements Parcelable {
     cropMenuCropButtonTitle = null;
 
     cropMenuCropButtonIcon = 0;
+
+    numberOfLines = 3;
+
+    showTextOnOverlay = false;
+
+    horizontalText = "";
+    verticalText = "";
   }
 
   /** Create object from parcel. */
@@ -335,6 +350,10 @@ public class CropImageOptions implements Parcelable {
     flipVertically = in.readByte() != 0;
     cropMenuCropButtonTitle = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
     cropMenuCropButtonIcon = in.readInt();
+    numberOfLines = in.readInt();
+    showTextOnOverlay = in.readByte() != 0;
+    horizontalText = in.readString();
+    verticalText = in.readString();
   }
 
   @Override
@@ -387,6 +406,10 @@ public class CropImageOptions implements Parcelable {
     dest.writeByte((byte) (flipVertically ? 1 : 0));
     TextUtils.writeToParcel(cropMenuCropButtonTitle, dest, flags);
     dest.writeInt(cropMenuCropButtonIcon);
+    dest.writeInt(numberOfLines);
+    dest.writeByte((byte) (showTextOnOverlay ? 1 : 0));
+    dest.writeString(horizontalText);
+    dest.writeString(verticalText);
   }
 
   @Override
@@ -458,6 +481,10 @@ public class CropImageOptions implements Parcelable {
     if (rotationDegrees < 0 || rotationDegrees > 360) {
       throw new IllegalArgumentException(
           "Cannot set rotation degrees value to a number < 0 or > 360");
+    }
+    if (numberOfLines < 0) {
+      throw  new IllegalArgumentException(
+              "Cannot set number of lines in guideline lower than 0");
     }
   }
 }

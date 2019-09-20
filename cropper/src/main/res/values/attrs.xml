@@ -45,6 +45,10 @@
         <attr name="cropMaxCropResultHeightPX" format="float"/>
         <attr name="cropFlipHorizontally" format="boolean"/>
         <attr name="cropFlipVertically" format="boolean"/>
+        <attr name="numberOfLines" format="integer"/>
+        <attr name="showTextOnOverlay" format="boolean"/>
+        <attr name="horizontalText" format="string"/>
+        <attr name="verticalText" format="string"/>
     </declare-styleable>
 
 </resources>

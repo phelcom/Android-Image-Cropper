@@ -88,6 +88,9 @@ public class CropOverlayView extends View {
   /** The radius of the touch zone (in pixels) around a given Handle. */
   private float mTouchRadius;
 
+  /** Number of horizontal and vertical lines in the guideline. */
+  private int mNumberOfLines;
+
   /**
    * An edge of the crop window will snap to the corresponding edge of a specified bounding box when
    * the crop window edge is less than or equal to this distance (in pixels) away from the bounding
@@ -130,7 +133,14 @@ public class CropOverlayView extends View {
 
   /** Used to set back LayerType after changing to software. */
   private Integer mOriginalLayerType;
-  // endregion
+
+  /** Text to be shown horizontally aligned. */
+  private String mHorizontalText = "";
+
+  /** Text to be shown vertically aligned. */
+  private String mVerticalText = "";
+
+  private boolean mShowTextOnOverlay;
 
   public CropOverlayView(Context context) {
     this(context, null);
@@ -331,6 +341,22 @@ public class CropOverlayView extends View {
     return false;
   }
 
+  public void setNumberOfLines(int numberOfLines){
+      mNumberOfLines = numberOfLines;
+  }
+
+  public void setHorizontalText(String horizontalText) {
+    this.mHorizontalText = horizontalText;
+  }
+
+  public void setVerticalText(String verticalText) {
+    this.mVerticalText = verticalText;
+  }
+
+  public void setShowTextOnOverlay(boolean show) {
+    this.mShowTextOnOverlay = show;
+  }
+
   /**
    * the min size the resulting cropping image is allowed to be, affects the cropping window limits
    * (in pixels).<br>
@@ -402,6 +428,14 @@ public class CropOverlayView extends View {
     setAspectRatioY(options.aspectRatioY);
 
     setMultiTouchEnabled(options.multiTouchEnabled);
+
+    setNumberOfLines(options.numberOfLines);
+
+    setShowTextOnOverlay(options.showTextOnOverlay);
+
+    setHorizontalText(options.horizontalText);
+
+    setVerticalText(options.verticalText);
 
     mTouchRadius = options.touchRadius;
 
@@ -592,6 +626,8 @@ public class CropOverlayView extends View {
     drawBorders(canvas);
 
     drawCorners(canvas);
+    if(mShowTextOnOverlay)
+      drawGrades(canvas);
   }
 
   /** Draw shadow background over the image not including the crop area. */
@@ -646,10 +682,14 @@ public class CropOverlayView extends View {
    * parts.
    */
   private void drawGuidelines(Canvas canvas) {
+    Log.d("ABACATE", "drawGuidelines");
     if (mGuidelinePaint != null) {
       float sw = mBorderPaint != null ? mBorderPaint.getStrokeWidth() : 0;
       RectF rect = mCropWindowHandler.getRect();
       rect.inset(sw, sw);
+
+      float fractionCropWidth = rect.width() / mNumberOfLines;
+      float fractionCropHeight = rect.height() / mNumberOfLines;
 
       float oneThirdCropWidth = rect.width() / 3;
       float oneThirdCropHeight = rect.height() / 3;
@@ -674,17 +714,30 @@ public class CropOverlayView extends View {
         canvas.drawLine(rect.left + w - xv, y2, rect.right - w + xv, y2, mGuidelinePaint);
       } else {
 
-        // Draw vertical guidelines.
-        float x1 = rect.left + oneThirdCropWidth;
-        float x2 = rect.right - oneThirdCropWidth;
-        canvas.drawLine(x1, rect.top, x1, rect.bottom, mGuidelinePaint);
-        canvas.drawLine(x2, rect.top, x2, rect.bottom, mGuidelinePaint);
+          // Draw vertical guidelines.
+          for(int i=1; i<mNumberOfLines; ++i){
+              float x = rect.left + i*fractionCropWidth;
+              canvas.drawLine(x, rect.top, x, rect.bottom, mGuidelinePaint);
+          }
 
-        // Draw horizontal guidelines.
-        float y1 = rect.top + oneThirdCropHeight;
-        float y2 = rect.bottom - oneThirdCropHeight;
-        canvas.drawLine(rect.left, y1, rect.right, y1, mGuidelinePaint);
-        canvas.drawLine(rect.left, y2, rect.right, y2, mGuidelinePaint);
+          // Draw horizontal guidelines.
+          for(int i=1; i<mNumberOfLines; ++i){
+              float y = rect.top + i*fractionCropHeight;
+              canvas.drawLine(rect.left, y, rect.right, y, mGuidelinePaint);
+          }
+
+//        // Draw vertical guidelines.
+//        float x1 = rect.left + oneThirdCropWidth;
+//        float x2 = rect.right - oneThirdCropWidth;
+//        canvas.drawLine(x1, rect.top, x1, rect.bottom, mGuidelinePaint);
+//        canvas.drawLine(x2, rect.top, x2, rect.bottom, mGuidelinePaint);
+
+
+//        // Draw horizontal guidelines.
+//        float y1 = rect.top + oneThirdCropHeight;
+//        float y2 = rect.bottom - oneThirdCropHeight;
+//        canvas.drawLine(rect.left, y1, rect.right, y1, mGuidelinePaint);
+//        canvas.drawLine(rect.left, y2, rect.right, y2, mGuidelinePaint);
       }
     }
   }
@@ -780,6 +833,34 @@ public class CropOverlayView extends View {
           rect.bottom + cornerOffset,
           mBorderCornerPaint);
     }
+  }
+
+  private void drawGrades(Canvas canvas){
+      if (mGuidelinePaint != null) {
+          float sw = mBorderPaint != null ? mBorderPaint.getStrokeWidth() : 0;
+          RectF rect = mCropWindowHandler.getRect();
+          rect.inset(sw, sw);
+
+          float fractionCropHeight = rect.height() / 2;
+          mGuidelinePaint.setTextSize(50);
+
+          float[] widths = new float[mHorizontalText.length()];
+          float sum = 0;
+          for(int i=0; i<widths.length; ++i){
+            sum += widths[i];
+          }
+          canvas.drawText(mHorizontalText, 0, mHorizontalText.length(), rect.right+mGuidelinePaint.getStrokeWidth()+10, rect.top + fractionCropHeight + mGuidelinePaint.getTextSize()/2, mGuidelinePaint);
+
+
+        float fractionCropWidth = rect.width() / 2;
+        widths = new float[mVerticalText.length()];
+        mGuidelinePaint.getTextWidths(mVerticalText, widths);
+        sum = 0;
+        for(int i=0; i<widths.length; ++i){
+          sum += widths[i];
+        }
+        canvas.drawText(mVerticalText, 0, mVerticalText.length(), rect.left + fractionCropWidth - sum/2, rect.bottom +50, mGuidelinePaint);
+      }
   }
 
   /** Creates the Paint object for drawing. */
@@ -980,7 +1061,8 @@ public class CropOverlayView extends View {
       Log.e("AIC", "Exception in crop window changed", e);
     }
   }
-  // endregion
+
+    // endregion
 
   // region: Inner class: CropWindowChangeListener
 

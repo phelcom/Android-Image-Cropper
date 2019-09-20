@@ -4,6 +4,8 @@ Android Image Cropper
 [![Build Status](https://travis-ci.org/ArthurHub/Android-Image-Cropper.svg?branch=master)](https://travis-ci.org/ArthurHub/Android-Image-Cropper)
 [ ![Download](https://api.bintray.com/packages/arthurhub/maven/Android-Image-Cropper/images/download.svg) ](https://bintray.com/arthurhub/maven/Android-Image-Cropper/_latestVersion)
 
+Based on https://github.com/ArthurHub/Android-Image-Cropper 2.5.1
+
 
 **Powerful** (Zoom, Rotation, Multi-Source), **customizable** (Shape, Limits, Style), **optimized** (Async, Sampling, Matrix) and **simple** image cropping library for Android.
 
