@@ -682,7 +682,6 @@ public class CropOverlayView extends View {
    * parts.
    */
   private void drawGuidelines(Canvas canvas) {
-    Log.d("ABACATE", "drawGuidelines");
     if (mGuidelinePaint != null) {
       float sw = mBorderPaint != null ? mBorderPaint.getStrokeWidth() : 0;
       RectF rect = mCropWindowHandler.getRect();
@@ -699,6 +698,7 @@ public class CropOverlayView extends View {
         float w = rect.width() / 2 - sw;
         float h = rect.height() / 2 - sw;
 
+
         // Draw vertical guidelines.
         float x1 = rect.left + oneThirdCropWidth;
         float x2 = rect.right - oneThirdCropWidth;
@@ -706,12 +706,15 @@ public class CropOverlayView extends View {
         canvas.drawLine(x1, rect.top + h - yv, x1, rect.bottom - h + yv, mGuidelinePaint);
         canvas.drawLine(x2, rect.top + h - yv, x2, rect.bottom - h + yv, mGuidelinePaint);
 
+
+
         // Draw horizontal guidelines.
         float y1 = rect.top + oneThirdCropHeight;
         float y2 = rect.bottom - oneThirdCropHeight;
         float xv = (float) (w * Math.cos(Math.asin((h - oneThirdCropHeight) / h)));
         canvas.drawLine(rect.left + w - xv, y1, rect.right - w + xv, y1, mGuidelinePaint);
         canvas.drawLine(rect.left + w - xv, y2, rect.right - w + xv, y2, mGuidelinePaint);
+
       } else {
 
           // Draw vertical guidelines.
@@ -837,6 +840,7 @@ public class CropOverlayView extends View {
 
   private void drawGrades(Canvas canvas){
       if (mGuidelinePaint != null) {
+//          Log.d("AAAA", "draw grades "+canvas.getWidth());
           float sw = mBorderPaint != null ? mBorderPaint.getStrokeWidth() : 0;
           RectF rect = mCropWindowHandler.getRect();
           rect.inset(sw, sw);
@@ -845,11 +849,22 @@ public class CropOverlayView extends View {
           mGuidelinePaint.setTextSize(50);
 
           float[] widths = new float[mHorizontalText.length()];
+          mGuidelinePaint.getTextWidths(mHorizontalText, widths);
           float sum = 0;
           for(int i=0; i<widths.length; ++i){
             sum += widths[i];
           }
-          canvas.drawText(mHorizontalText, 0, mHorizontalText.length(), rect.right+mGuidelinePaint.getStrokeWidth()+10, rect.top + fractionCropHeight + mGuidelinePaint.getTextSize()/2, mGuidelinePaint);
+          float x = rect.right+mGuidelinePaint.getStrokeWidth()+10;
+//          Log.d("AAAA", "entrou X:"+(x+sum));
+          if(x + sum> canvas.getWidth()){
+//              Log.d("AAAA", "entrou X");
+              // Draw inside
+              x = rect.right - sum - mGuidelinePaint.getStrokeWidth() - 20;
+          }
+
+
+//          canvas.drawText(mHorizontalText, 0, mHorizontalText.length(), rect.right+mGuidelinePaint.getStrokeWidth()+10, rect.top + fractionCropHeight + mGuidelinePaint.getTextSize()/2, mGuidelinePaint);
+          canvas.drawText(mHorizontalText, 0, mHorizontalText.length(), x, rect.top + fractionCropHeight + mGuidelinePaint.getTextSize()/2, mGuidelinePaint);
 
 
         float fractionCropWidth = rect.width() / 2;
@@ -859,7 +874,18 @@ public class CropOverlayView extends View {
         for(int i=0; i<widths.length; ++i){
           sum += widths[i];
         }
-        canvas.drawText(mVerticalText, 0, mVerticalText.length(), rect.left + fractionCropWidth - sum/2, rect.bottom +50, mGuidelinePaint);
+        Rect bounds = new Rect();
+        mGuidelinePaint.getTextBounds(mVerticalText, 0, mVerticalText.length(), bounds);
+
+          float y = rect.bottom +80;
+          if(y > canvas.getHeight()){
+              // Draw inside
+//              Log.d("AAAA", "entrou Y");
+              y = rect.bottom - bounds.height() - 20;
+          }
+          canvas.drawText(mVerticalText, 0, mVerticalText.length(), rect.left + fractionCropWidth - sum/2, y, mGuidelinePaint);
+
+//        canvas.drawText(mVerticalText, 0, mVerticalText.length(), rect.left + fractionCropWidth - sum/2, rect.bottom +50, mGuidelinePaint);
       }
   }
 

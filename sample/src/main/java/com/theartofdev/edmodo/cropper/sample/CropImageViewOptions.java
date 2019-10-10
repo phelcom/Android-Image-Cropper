@@ -21,7 +21,7 @@ final class CropImageViewOptions {
 
   public CropImageView.ScaleType scaleType = CropImageView.ScaleType.CENTER_INSIDE;
 
-  public CropImageView.CropShape cropShape = CropImageView.CropShape.RECTANGLE;
+  public CropImageView.CropShape cropShape = CropImageView.CropShape.OVAL;
 
   public CropImageView.Guidelines guidelines = CropImageView.Guidelines.ON_TOUCH;
 
@@ -42,4 +42,12 @@ final class CropImageViewOptions {
   public boolean flipHorizontally;
 
   public boolean flipVertically;
+
+  public int numberOfLines;
+
+  public boolean showTextOnOverlay = true;
+
+  public String horizontalText = "A";
+
+  public String verticalText = "B";
 }

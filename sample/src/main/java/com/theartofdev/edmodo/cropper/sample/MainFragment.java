@@ -71,6 +71,9 @@ public final class MainFragment extends Fragment
     mCropImageView.setMaxZoom(options.maxZoomLevel);
     mCropImageView.setFlippedHorizontally(options.flipHorizontally);
     mCropImageView.setFlippedVertically(options.flipVertically);
+    mCropImageView.setShowTextOnOverlay(options.showTextOnOverlay);
+    mCropImageView.setCropOverlayHorizontalText(options.horizontalText);
+    mCropImageView.setCropOverlayVerticalText(options.verticalText);
   }
 
   /** Set the initial rectangle to use. */
@@ -96,6 +99,7 @@ public final class MainFragment extends Fragment
     options.maxZoomLevel = mCropImageView.getMaxZoom();
     options.flipHorizontally = mCropImageView.isFlippedHorizontally();
     options.flipVertically = mCropImageView.isFlippedVertically();
+    // TODO: horizontal and vertical string
     ((MainActivity) getActivity()).setCurrentOptions(options);
   }
 
@@ -145,6 +149,10 @@ public final class MainFragment extends Fragment
         mCropImageView.setImageResource(R.drawable.cat);
       }
     }
+
+    mCropImageView.setShowTextOnOverlay(true);
+    mCropImageView.setCropOverlayHorizontalText("AAAA");
+    mCropImageView.setCropOverlayVerticalText("BBBB");
   }
 
   @Override
